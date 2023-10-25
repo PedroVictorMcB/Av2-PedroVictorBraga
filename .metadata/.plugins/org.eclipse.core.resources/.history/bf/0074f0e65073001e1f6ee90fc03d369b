@@ -1,0 +1,84 @@
+package q2_PedroVictorBraga;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
+public class SistemaDeLogin {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        // Solicita ao usuário se deseja cadastrar um novo login e senha
+        System.out.print("Deseja cadastrar um novo login e senha? (S/N): ");
+        String resposta = scanner.nextLine();
+
+        if (resposta.equalsIgnoreCase("S")) {
+            cadastrarLoginSenha();
+        }
+
+        System.out.println("Faça o login:");
+        System.out.print("Login: ");
+        String login = scanner.nextLine();
+        System.out.print("Senha: ");
+        String senha = scanner.nextLine();
+        
+
+        if (verificarLoginSenha(login, senha)) {
+            System.out.println("SUCESSO");
+        } else {
+            System.out.println("FRACASSO");
+        }
+    }
+
+    // Função para cadastrar um novo login e senha
+    public static void cadastrarLoginSenha() {
+        try {
+            Scanner scanner = new Scanner(System.in);
+
+            System.out.print("Digite o novo login: ");
+            String novoLogin = scanner.nextLine();
+            System.out.print("Digite a nova senha: ");
+            String novaSenha = scanner.nextLine();
+
+            File arquivo = new File("logins_senhas.txt");
+            FileWriter escritor = new FileWriter(arquivo, true);
+
+            escritor.write(novoLogin + "," + novaSenha + "\n");
+            escritor.close();
+            
+            scanner.close();
+
+            System.out.println("Login e senha cadastrados com sucesso!");
+
+        } catch (IOException e) {
+            System.out.println("Erro ao cadastrar login e senha: " + e.getMessage());
+        }
+    }
+
+    // Função para verificar se o login e senha fornecidos estão corretos
+    public static boolean verificarLoginSenha(String login, String senha) {
+        try {
+            File arquivo = new File("logins_senhas.txt");
+            Scanner leitor = new Scanner(arquivo);
+
+            while (leitor.hasNextLine()) {
+                String linha = leitor.nextLine();
+                String[] partes = linha.split(",");
+                if (partes.length == 2) {
+                    String loginArmazenado = partes[0];
+                    String senhaArmazenada = partes[1];
+                    if (login.equals(loginArmazenado) && senha.equals(senhaArmazenada)) {
+                        leitor.close();
+                        return true;
+                    }
+                }
+            }
+            leitor.close();
+        } catch (IOException e) {
+            System.out.println("Erro ao ler arquivo de logins e senhas: " + e.getMessage());
+        }
+        return false;
+    }
+}

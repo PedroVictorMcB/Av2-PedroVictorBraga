@@ -1,0 +1,80 @@
+package q4_PedroVictorBraga;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class MultiplicacaoMatrizes {
+
+    public static void main(String[] args) {
+        int[][] matrizA;
+        int[][] matrizB;
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("matrizes.txt"));
+            String linha;
+            int linhaA = 0, linhaB = 0;
+            
+            // Leitura das matrizes do arquivo
+            while ((linha = br.readLine()) != null) {
+                if (linhaA == 0) {
+                    String[] elementos = linha.split(" ");
+                    matrizA = new int[Integer.parseInt(elementos[0])][Integer.parseInt(elementos[1])];
+                    matrizB = new int[Integer.parseInt(elementos[1])][Integer.parseInt(elementos[2])];
+                } else if (linhaA <= matrizA.length) {
+                    String[] elementos = linha.split(" ");
+                    for (int i = 0; i < elementos.length; i++) {
+                        matrizA[linhaA - 1][i] = Integer.parseInt(elementos[i]);
+                    }
+                } else if (linhaB <= matrizB.length) {
+                    String[] elementos = linha.split(" ");
+                    for (int i = 0; i < elementos.length; i++) {
+                        matrizB[linhaB - 1][i] = Integer.parseInt(elementos[i]);
+                    }
+                }
+                linhaA++;
+                linhaB++;
+            }
+            br.close();
+
+            // Verifica se é possível multiplicar as matrizes
+            if (matrizA[0].length != matrizB.length) {
+                System.out.println("Não é possível multiplicar as matrizes. O número de colunas da matriz A deve ser igual ao número de linhas da matriz B.");
+                return;
+            }
+
+            // Multiplicação das matrizes
+            int[][] resultado = multiplicarMatrizes(matrizA, matrizB);
+
+            // Exibição do resultado
+            System.out.println("Resultado da multiplicação:");
+            for (int i = 0; i < resultado.length; i++) {
+                for (int j = 0; j < resultado[0].length; j++) {
+                    System.out.print(resultado[i][j] + " ");
+                }
+                System.out.println();
+            }
+
+        } catch (IOException e) {
+            System.err.println("Erro ao ler o arquivo: " + e.getMessage());
+        }
+    }
+
+    // Função para multiplicar duas matrizes
+    public static int[][] multiplicarMatrizes(int[][] matrizA, int[][] matrizB) {
+        int linhasA = matrizA.length;
+        int colunasA = matrizA[0].length;
+        int colunasB = matrizB[0].length;
+        int[][] resultado = new int[linhasA][colunasB];
+
+        for (int i = 0; i < linhasA; i++) {
+            for (int j = 0; j < colunasB; j++) {
+                for (int k = 0; k < colunasA; k++) {
+                    resultado[i][j] += matrizA[i][k] * matrizB[k][j];
+                }
+            }
+        }
+
+        return resultado;
+    }
+}
